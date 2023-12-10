@@ -60,8 +60,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         watchlist = new ArrayList<>();
-        adapter = new PokemonListAdapter(this, watchlist);
-        pokeList.setAdapter(adapter);
+        //adapter = new PokemonListAdapter(this, watchlist);
+        //pokeList.setAdapter(adapter);
 
         //button listeners
         buttonAddPokemon.setOnClickListener(new View.OnClickListener() {
@@ -70,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
                 String pokemonNameOrId = editTextPokemon.getText().toString().trim();
                 if (!pokemonNameOrId.isEmpty()) {
                     fetchPokemonData(pokemonNameOrId);
+                } else{
+                    Toast.makeText(getApplicationContext(),"Must enter a Pokemon name or ID", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -102,19 +104,31 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Pokemon selectedPokemon = watchlist.get(position);
-                fetchPokemonData(selectedPokemon.getName()); // Fetch data for the selected Pokemon
+                fetchPokemonData(selectedPokemon.getName());
             }
         });
     }
 
     private void addPokemonToWatchlist(Pokemon pokemon) {
-        watchlist.add(pokemon);
-        watchlistNames.add(pokemon.getPokedexId() + " - " + pokemon.getName());
-        watchlistAdapter.notifyDataSetChanged();
+        if(!watchlist.contains(pokemon)){
+            watchlist.add(pokemon);
+            watchlistNames.add(pokemon.getName() + " - " + pokemon.getPokedexId());
+            watchlistAdapter.notifyDataSetChanged();
+            Toast.makeText(this, "Added to watchlist: " + pokemon.getName(), Toast.LENGTH_SHORT).show();
+        }
+        else{
+            Toast.makeText(this, "Pokemon already in list.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void clearCurrentPokemon() {
-        // clearing the current Pokemon profile
+        PokeNameText.setText(getString(R.string.name));
+        pokedexIDText.setText(getString(R.string.id));
+        weightText.setText(getString(R.string.weightplain));
+        heightText.setText(getString(R.string.heightplain));
+        baseXPText.setText(getString(R.string.xp));
+        moveText.setText(getString(R.string.moveplain));
+        abilityText.setText(getString(R.string.abilityplain));
     }
 
     private void clearAllPokemon() {
@@ -165,7 +179,8 @@ public class MainActivity extends AppCompatActivity {
             baseXPText.setText(String.valueOf(baseXP));
             moveText.setText(move);
             abilityText.setText(ability);
-
+            Pokemon p = new Pokemon(name, pokedexId, weight, height, baseXP, move, ability);
+            addPokemonToWatchlist(p);
             // Optionally, load the Pokemon image using an image loading library like Picasso or Glide
             // You can set the image URL using response.getJSONObject("sprites").getString("front_default")
 
