@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Pokemon> watchlist;
     private List<String> watchlistNames;
     private ArrayAdapter<String> watchlistAdapter;
-    private PokemonListAdapter adapter;
     private RequestQueue requestQueue;
 
     @Override
@@ -58,10 +57,7 @@ public class MainActivity extends AppCompatActivity {
         moveText = findViewById(R.id.moveText);
         abilityText = findViewById(R.id.abilityText);
 
-
         watchlist = new ArrayList<>();
-        //adapter = new PokemonListAdapter(this, watchlist);
-        //pokeList.setAdapter(adapter);
 
         //button listeners
         buttonAddPokemon.setOnClickListener(new View.OnClickListener() {
