@@ -1,15 +1,29 @@
 package com.example.pokewatchlistredo;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,7 +33,10 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imageView;
     private TextView PokeNameText, pokedexIDText, weightText, heightText, baseXPText, moveText, abilityText;
     private ArrayList<Pokemon> watchlist;
+    private List<String> watchlistNames;
+    private ArrayAdapter<String> watchlistAdapter;
     private PokemonListAdapter adapter;
+    private RequestQueue requestQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +67,10 @@ public class MainActivity extends AppCompatActivity {
         buttonAddPokemon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addPokemonToWatchlist();
+                String pokemonNameOrId = editTextPokemon.getText().toString().trim();
+                if (!pokemonNameOrId.isEmpty()) {
+                    fetchPokemonData(pokemonNameOrId);
+                }
             }
         });
 
@@ -67,10 +87,30 @@ public class MainActivity extends AppCompatActivity {
                 clearAllPokemon();
             }
         });
+
+        requestQueue = Volley.newRequestQueue(this);
+
+
+        watchlistNames = new ArrayList<>();
+        watchlistAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, watchlistNames);
+
+
+        pokeList.setAdapter(watchlistAdapter);
+
+
+        pokeList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Pokemon selectedPokemon = watchlist.get(position);
+                fetchPokemonData(selectedPokemon.getName()); // Fetch data for the selected Pokemon
+            }
+        });
     }
 
-    private void addPokemonToWatchlist() {
-        //adding pokemon to the watchlist
+    private void addPokemonToWatchlist(Pokemon pokemon) {
+        watchlist.add(pokemon);
+        watchlistNames.add(pokemon.getPokedexId() + " - " + pokemon.getName());
+        watchlistAdapter.notifyDataSetChanged();
     }
 
     private void clearCurrentPokemon() {
@@ -78,9 +118,59 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void clearAllPokemon() {
-        //clearing all Pokemon from the watchlist
+        watchlist.clear();
+        watchlistAdapter.notifyDataSetChanged();
+        clearCurrentPokemon();
     }
 
-    // need to add handling the api requests
 
+    private void fetchPokemonData(String pokemonNameOrId) {
+        String apiUrl = "https://pokeapi.co/api/v2/pokemon/" + pokemonNameOrId.toLowerCase();
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, apiUrl, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        parsePokemonData(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(MainActivity.this, "Error fetching Pokemon data", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        // add the request to the RequestQueue
+        requestQueue.add(jsonObjectRequest);
+    }
+
+    private void parsePokemonData(JSONObject response) {
+        try {
+            String name = response.getString("name");
+            int pokedexId = response.getInt("id");
+            double weight = response.getDouble("weight");
+            double height = response.getDouble("height");
+            int baseXP = response.getInt("base_experience");
+
+            // get the first move and ability
+            String move = response.getJSONArray("moves").getJSONObject(0).getJSONObject("move").getString("name");
+            String ability = response.getJSONArray("abilities").getJSONObject(0).getJSONObject("ability").getString("name");
+
+            //set textviews with data
+            PokeNameText.setText(name);
+            pokedexIDText.setText(String.valueOf(pokedexId));
+            weightText.setText(String.valueOf(weight));
+            heightText.setText(String.valueOf(height));
+            baseXPText.setText(String.valueOf(baseXP));
+            moveText.setText(move);
+            abilityText.setText(ability);
+
+            // Optionally, load the Pokemon image using an image loading library like Picasso or Glide
+            // You can set the image URL using response.getJSONObject("sprites").getString("front_default")
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 }
