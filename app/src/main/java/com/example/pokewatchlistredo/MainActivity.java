@@ -113,8 +113,6 @@ public class MainActivity extends AppCompatActivity {
         //fetchPokemonData("pikachu"); //should work with just name
         //fetchPokemonData("1000"); //should work with just pokeid
         //fetchPokemonData("eon4$$"); //should be invalid
-        //fetchPokemonData("charmander1000");//should be invalid
-        //fetchPokemonData("1000charmander");//should be invalid
     }
 
     private void addPokemonToWatchlist(Pokemon pokemon) {
@@ -131,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean isValidName(String name) {
         // check if the name contains invalid characters
         if (name.matches(".*[%&*(@)!;:<>].*")) {
+            Toast.makeText(this, "Contains invalid characters", Toast.LENGTH_SHORT).show();
             return false;
         }
         // check if the name is a valid number
@@ -138,10 +137,12 @@ public class MainActivity extends AppCompatActivity {
             int numericValue = Integer.parseInt(name);
             // check if the numeric value is negative or greater than 1010
             if (numericValue < 0 || numericValue > 1010) {
+                Toast.makeText(this, "Number must be less than 1010 and positive", Toast.LENGTH_SHORT).show();
                 return false;
             }
         } catch (NumberFormatException e) {
             // the name is not a valid numeric value
+            Toast.makeText(this, "Not valid", Toast.LENGTH_SHORT).show();
         }
         // the name is valid
         return true;
