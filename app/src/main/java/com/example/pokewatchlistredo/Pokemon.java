@@ -21,57 +21,25 @@ public class Pokemon {
     public String getName() {
         return name;
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public int getPokedexId() {
         return pokedexId;
     }
-
-    public void setPokedexId(int pokedexId) {
-        this.pokedexId = pokedexId;
-    }
-
     public double getWeight() {
         return weight;
     }
-
-    public void setWeight(double weight) {
-        this.weight = weight;
-    }
-
     public double getHeight() {
         return height;
     }
-
-    public void setHeight(double height) {
-        this.height = height;
-    }
-
     public int getBaseXP() {
         return baseXP;
     }
-
-    public void setBaseXP(int baseXP) {
-        this.baseXP = baseXP;
-    }
-
     public String getMove() {
         return move;
     }
-
-    public void setMove(String move) {
-        this.move = move;
-    }
-
     public String getAbility() {
         return ability;
     }
 
-    public void setAbility(String ability) {
-        this.ability = ability;
-    }
+
 
 }

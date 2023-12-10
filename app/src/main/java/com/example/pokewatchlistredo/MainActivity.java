@@ -18,6 +18,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -106,6 +107,13 @@ public class MainActivity extends AppCompatActivity {
                 fetchPokemonData(selectedPokemon.getName());
             }
         });
+
+        //try values
+        fetchPokemonData("pikachu"); //should work with just name
+        fetchPokemonData("1000"); //should work with just pokeid
+        fetchPokemonData("eon4$$"); //should be invalid
+        fetchPokemonData("charmander1000");//should be invalid
+        fetchPokemonData("1000charmander");//should be invalid
     }
 
     private void addPokemonToWatchlist(Pokemon pokemon) {
@@ -139,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void clearCurrentPokemon() {
-        //reset data fields to default entry
+        // reset data fields to default entry
         PokeNameText.setText(getString(R.string.name));
         pokedexIDText.setText(getString(R.string.id));
         weightText.setText(getString(R.string.weightplain));
@@ -147,6 +155,8 @@ public class MainActivity extends AppCompatActivity {
         baseXPText.setText(getString(R.string.xp));
         moveText.setText(getString(R.string.moveplain));
         abilityText.setText(getString(R.string.abilityplain));
+        // clear the image view
+        imageView.setImageDrawable(null);
         // set the search bar to an empty string
         editTextPokemon.setText("");
     }
@@ -182,6 +192,18 @@ public class MainActivity extends AppCompatActivity {
         // add the request to the RequestQueue
         requestQueue.add(jsonObjectRequest);
     }
+    private String getPokemonImageUrl(int pokemonId) {
+        String baseUrl = "https://github.com/HybridShivam/Pokemon/blob/master/assets/images/";
+
+        // construct the URL based id number
+        if (pokemonId < 10) {
+            return baseUrl + "00" + pokemonId + ".png?raw=true";
+        } else if (pokemonId < 100) {
+            return baseUrl + "0" + pokemonId + ".png?raw=true";
+        } else {
+            return baseUrl + pokemonId + ".png?raw=true";
+        }
+    }
 
     private void parsePokemonData(JSONObject response) {
         try {
@@ -203,6 +225,10 @@ public class MainActivity extends AppCompatActivity {
             baseXPText.setText(String.valueOf(baseXP));
             moveText.setText(move);
             abilityText.setText(ability);
+
+            String imageUrl = getPokemonImageUrl(pokedexId);
+            Picasso.get().load(imageUrl).into(imageView);
+
             Pokemon p = new Pokemon(name, pokedexId, weight, height, baseXP, move, ability);
             addPokemonToWatchlist(p);
             // Optionally, load the Pokemon image using an image loading library like Picasso or Glide
