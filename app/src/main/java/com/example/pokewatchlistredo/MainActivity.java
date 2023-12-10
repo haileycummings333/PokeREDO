@@ -17,9 +17,7 @@ public class MainActivity extends AppCompatActivity {
     private Button buttonAddPokemon, clearProfButton, clearListButton;
     private ListView pokeList;
     private ImageView imageView;
-    private TextView PokeNameText, pokedexIdTV, weightTV, heightTV, baseXPTV, moveTV, abilityTV;
-    private TextView pokedexIDText, weightText, heightText, baseXPText, moveText, abilityText;
-    //need to update these classes
+    private TextView PokeNameText, pokedexIDText, weightText, heightText, baseXPText, moveText, abilityText;
     private ArrayList<Pokemon> watchlist;
     private PokemonListAdapter adapter;
 
@@ -34,13 +32,8 @@ public class MainActivity extends AppCompatActivity {
         clearListButton = findViewById(R.id.clearListButton);
         pokeList = findViewById(R.id.pokeList);
         imageView = findViewById(R.id.imageView);
+
         PokeNameText = findViewById(R.id.PokeNameText);
-        pokedexIdTV = findViewById(R.id.pokedexIdTV);
-        weightTV = findViewById(R.id.weightTV);
-        heightTV = findViewById(R.id.heightTV);
-        baseXPTV = findViewById(R.id.baseXPTV);
-        moveTV = findViewById(R.id.moveTV);
-        abilityTV = findViewById(R.id.abilityTV);
         pokedexIDText = findViewById(R.id.pokedexIDText);
         weightText = findViewById(R.id.weightText);
         heightText = findViewById(R.id.heightText);
@@ -48,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         moveText = findViewById(R.id.moveText);
         abilityText = findViewById(R.id.abilityText);
 
-        //still need to edit Pokemon and PokemonListAdapter class
+
         watchlist = new ArrayList<>();
         adapter = new PokemonListAdapter(this, watchlist);
         pokeList.setAdapter(adapter);
