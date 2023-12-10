@@ -68,13 +68,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String pokemonNameOrId = editTextPokemon.getText().toString().trim();
-                if (!pokemonNameOrId.isEmpty()) {
+                if (isValidName(pokemonNameOrId)) {
+                    // valid Pokemon name, proceed with adding to the watchlist and fetching data
                     fetchPokemonData(pokemonNameOrId);
-                } else{
-                    Toast.makeText(getApplicationContext(),"Must enter a Pokemon name or ID", Toast.LENGTH_SHORT).show();
+                } else {
+                    // notify user of invalid Pokemon name
+                    Toast.makeText(MainActivity.this, "Invalid Pokemon name", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+
 
         clearProfButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,8 +123,27 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Pokemon already in list.", Toast.LENGTH_SHORT).show();
         }
     }
+    private boolean isValidName(String name) {
+        // check if the name contains invalid characters
+        if (name.matches(".*[%&*(@)!;:<>].*")) {
+            return false;
+        }
+        // check if the name is a valid number
+        try {
+            int numericValue = Integer.parseInt(name);
+            // check if the numeric value is negative or greater than 1010
+            if (numericValue < 0 || numericValue > 1010) {
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            // the name is not a valid numeric value
+        }
+        // the name is valid
+        return true;
+    }
 
     private void clearCurrentPokemon() {
+        //reset data fields to default entry
         PokeNameText.setText(getString(R.string.name));
         pokedexIDText.setText(getString(R.string.id));
         weightText.setText(getString(R.string.weightplain));
@@ -129,12 +151,18 @@ public class MainActivity extends AppCompatActivity {
         baseXPText.setText(getString(R.string.xp));
         moveText.setText(getString(R.string.moveplain));
         abilityText.setText(getString(R.string.abilityplain));
+        // set the search bar to an empty string
+        editTextPokemon.setText("");
     }
 
     private void clearAllPokemon() {
-        watchlist.clear();
-        watchlistAdapter.notifyDataSetChanged();
-        clearCurrentPokemon();
+        if(!watchlist.isEmpty()){
+            watchlist.clear();
+            watchlistAdapter.notifyDataSetChanged();
+            clearCurrentPokemon();}
+        else{
+            Toast.makeText(MainActivity.this, "List is already empty.", Toast.LENGTH_SHORT).show();
+        }
     }
 
 
