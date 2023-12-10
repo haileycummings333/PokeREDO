@@ -58,8 +58,10 @@
         android:layout_height="30dp"
         android:layout_marginTop="20dp"
         android:text="@string/search"
+        android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="18sp"
+        android:textStyle="bold|italic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.046"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -69,16 +71,16 @@
 
     <TextView
         android:id="@+id/PokeNameText"
-        android:layout_width="130dp"
-        android:layout_height="28dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="220dp"
+        android:layout_height="43dp"
+        android:layout_marginTop="40dp"
         android:text="@string/name"
         android:textAlignment="center"
-        android:textColor="@color/gray"
-        android:textSize="18sp"
+        android:textColor="@color/black"
+        android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.727"
+        app:layout_constraintHorizontal_bias="0.657"
         app:layout_constraintStart_toEndOf="@+id/imageView"
         app:layout_constraintTop_toBottomOf="@+id/divider" />
 
@@ -87,7 +89,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="36dp"
-        android:layout_marginTop="84dp"
+        android:layout_marginTop="60dp"
         android:text="@string/pokedex_id"
         android:textColor="@color/black"
         android:textSize="18sp"
@@ -249,14 +251,13 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="83dp"
-        android:layout_height="72dp"
+        android:layout_width="160dp"
+        android:layout_height="124dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
+        android:contentDescription="@string/pokeimage"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider"
-        app:srcCompat="@android:drawable/ic_menu_info_details"
-        android:contentDescription="@string/pokeimage" />
+        app:srcCompat="@android:drawable/ic_menu_info_details" />
 
 
     <ListView

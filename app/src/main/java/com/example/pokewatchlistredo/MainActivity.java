@@ -64,13 +64,14 @@ public class MainActivity extends AppCompatActivity {
         buttonAddPokemon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String pokemonNameOrId = editTextPokemon.getText().toString().trim();
-                if (isValidName(pokemonNameOrId)) {
+                String pokemonNameOrId = editTextPokemon.getText().toString();
+                boolean empty = pokemonNameOrId.isEmpty();
+                if (isValidName(pokemonNameOrId) && !empty) {
                     // valid Pokemon name, proceed with adding to the watchlist and fetching data
                     fetchPokemonData(pokemonNameOrId);
                 } else {
                     // notify user of invalid Pokemon name
-                    Toast.makeText(MainActivity.this, "Invalid Pokemon name", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Invalid Pokemon name", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -109,15 +110,15 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //try values
-        fetchPokemonData("pikachu"); //should work with just name
-        fetchPokemonData("1000"); //should work with just pokeid
-        fetchPokemonData("eon4$$"); //should be invalid
-        fetchPokemonData("charmander1000");//should be invalid
-        fetchPokemonData("1000charmander");//should be invalid
+        //fetchPokemonData("pikachu"); //should work with just name
+        //fetchPokemonData("1000"); //should work with just pokeid
+        //fetchPokemonData("eon4$$"); //should be invalid
+        //fetchPokemonData("charmander1000");//should be invalid
+        //fetchPokemonData("1000charmander");//should be invalid
     }
 
     private void addPokemonToWatchlist(Pokemon pokemon) {
-        if(!watchlist.contains(pokemon)){
+        if(!watchlistNames.contains(pokemon.getName() + " - " + pokemon.getPokedexId())){
             watchlist.add(pokemon);
             watchlistNames.add(pokemon.getName() + " - " + pokemon.getPokedexId());
             watchlistAdapter.notifyDataSetChanged();
@@ -165,9 +166,11 @@ public class MainActivity extends AppCompatActivity {
         if(!watchlist.isEmpty()){
             watchlist.clear();
             watchlistAdapter.notifyDataSetChanged();
-            clearCurrentPokemon();}
+            watchlistNames.clear();
+            clearCurrentPokemon();
+        }
         else{
-            Toast.makeText(MainActivity.this, "List is already empty.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "List is already empty.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -185,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(MainActivity.this, "Error fetching Pokemon data", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Error fetching Pokemon data", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -193,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
         requestQueue.add(jsonObjectRequest);
     }
     private String getPokemonImageUrl(int pokemonId) {
-        String baseUrl = "https://github.com/HybridShivam/Pokemon/blob/master/assets/images/";
+        String baseUrl = "https://github.com/HybridShivam/Pokemon/blob/master/assets/imagesHQ/";
 
         // construct the URL based id number
         if (pokemonId < 10) {
@@ -231,8 +234,6 @@ public class MainActivity extends AppCompatActivity {
 
             Pokemon p = new Pokemon(name, pokedexId, weight, height, baseXP, move, ability);
             addPokemonToWatchlist(p);
-            // Optionally, load the Pokemon image using an image loading library like Picasso or Glide
-            // You can set the image URL using response.getJSONObject("sprites").getString("front_default")
 
         } catch (JSONException e) {
             e.printStackTrace();
